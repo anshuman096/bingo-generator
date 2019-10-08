@@ -14,7 +14,6 @@ def select_bingo_tasks(bingo_tasks):
     indices = get_task_indexes()
     tasks = []
     for index in indices:
-        print(bingo_tasks[index])
         tasks.append(bingo_tasks[index])
     return tasks
 
@@ -78,5 +77,4 @@ for i in range(cards):
     else:
         out_file.write(generateTable(terms, False))
 out_file.write("</body></html>")
-print(sys.argv)
 out_file.close()
