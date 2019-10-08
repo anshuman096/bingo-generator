@@ -1,13 +1,22 @@
 import random
 import sys
 
+
+def get_task_indexes():
+    indices = set()
+    while len(indices) < 25:
+        index = random.randint(1, 100)
+        indices.add(index)
+    return list(indices)
+
+
 def select_bingo_tasks(bingo_tasks):
-    tasks = set()
-    while len(tasks) <= 25:
-        task_index = random.randint(1, 100)
-        task = bingo_tasks[task_index]
-        tasks.add(bingo_tasks[task_index])
-    return list(tasks)
+    indices = get_task_indexes()
+    tasks = []
+    for index in indices:
+        print(bingo_tasks[index])
+        tasks.append(bingo_tasks[index])
+    return tasks
 
 task_list = []
 with open('bingo_tasks_list.txt', encoding = "utf-8") as fp:
@@ -61,7 +70,7 @@ def generateTable(terms, pagebreak = True):
 
 out_file = open('card.html', 'w')
 out_file.write(head)
-cards = 300
+cards = 1
 for i in range(cards):
     terms = select_bingo_tasks(task_list)
     if i != cards - 1:
@@ -69,5 +78,5 @@ for i in range(cards):
     else:
         out_file.write(generateTable(terms, False))
 out_file.write("</body></html>")
-
+print(sys.argv)
 out_file.close()
