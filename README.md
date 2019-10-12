@@ -8,5 +8,5 @@ This program generates _n_ 5x5 bingo sheets (where _n_ is specified by the user)
 Run the following command on your command line, within the `bingo-generator` directory:
 
 ```
-python bingo_generator.py
+python bingo_generator.py [text-file] [num-cards]
 ```
