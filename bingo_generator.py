@@ -1,26 +1,10 @@
+#
+# code for HTML generation used from:
+# https://github.com/hrs/bingo
+#
+
 import random
 import sys
-
-
-def get_task_indexes():
-    indices = set()
-    while len(indices) < 25:
-        index = random.randint(1, 100)
-        indices.add(index)
-    return list(indices)
-
-
-def select_bingo_tasks(bingo_tasks):
-    indices = get_task_indexes()
-    tasks = []
-    for index in indices:
-        tasks.append(bingo_tasks[index])
-    return tasks
-
-task_list = []
-with open('bingo_tasks_list.txt', encoding = "utf-8") as fp:
-    for line in fp:
-        task_list.append(line.rstrip())
 
 head = ("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">\n"
         "<html lang=\"en\">\n<head>\n"
@@ -33,6 +17,78 @@ head = ("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org
         "\ttr { height: 60px; }\n"
         "\ttd { text-align: center; border: thin grey solid; border-radius: 15px; padding: 10px; width: 100px; height: 100px }\n"
         "</style>\n</head>\n<body>\n")
+
+
+
+def get_task_indexes(num_tasks):
+    """
+    Selects 25 random & unique indices between the range of 1 and the
+    total number of tasks to choose from.
+
+    Parameters
+    ----------
+    num_tasks : integer
+        the number of possible tasks there are
+
+    Returns
+    -------
+    indices : list
+        a list of the unique indexes
+
+    """
+    indices = set()
+    while len(indices) < 25:
+        index = random.randint(0, num_tasks - 1)
+        indices.add(index)
+    return list(indices)
+
+
+def select_bingo_tasks(bingo_tasks):
+    """
+    Extracts random indexes and selects respective bingo tasks for
+    a single card
+
+    Parameters
+    ----------
+    bingo_tasks : list
+        a list of strings, containing different possible tasks for bingo
+        cards
+
+    Returns
+    -------
+    tasks : list
+        the 25 selected tasks for a bingo card
+
+    """
+    num_tasks = len(bingo_tasks)
+    indices = get_task_indexes(num_tasks)
+    tasks = []
+    for index in indices:
+        tasks.append(bingo_tasks[index])
+    return tasks
+
+
+def get_tasks(filename):
+    """
+    Extracts tasks from a .txt file and stores them in a python list
+
+    Parameters
+    ----------
+    filename : string
+        name of text file with bingo tasks
+
+    Returns
+    -------
+    task_list : list
+        the list of bingo tasks in the text file
+
+    """
+    task_list = []
+    with open(filename, encoding = "utf-8") as fp:
+        for line in fp:
+            task_list.append(line.rstrip())
+    fp.close()
+    return task_list
 
 def generateTable(terms, pagebreak = True):
     """
@@ -67,12 +123,14 @@ def generateTable(terms, pagebreak = True):
     res += "</table>\n"
     return res
 
+task_file = sys.argv[1]
+task_list = get_tasks(task_file)
+num_cards = int(sys.argv[2])
 out_file = open('card.html', 'w')
 out_file.write(head)
-cards = 1
-for i in range(cards):
+for i in range(num_cards):
     terms = select_bingo_tasks(task_list)
-    if i != cards - 1:
+    if i != num_cards - 1:
         out_file.write(generateTable(terms))
     else:
         out_file.write(generateTable(terms, False))
